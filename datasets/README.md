@@ -1,6 +1,6 @@
 ## 📊 Datasets
 
-This project uses data from the **2021–2023 NHANES cycle**, which resumed after the COVID-19 fieldwork suspension. The datasets are in `.xpt` (SAS transport) format and were collected using an updated sampling design. For more details on this cycle's methodology, see the [NHANES Plan and Operations Report]([https://www.cdc.gov/nchs/nhanes/index.htm](https://www.cdc.gov/nchs/nhanes/index.html)).
+This project uses data from the **2021–2023 NHANES cycle**, which resumed after the COVID-19 fieldwork suspension. The datasets are in `.xpt` (SAS transport) format and were collected using an updated sampling design. For more details on this cycle's methodology, see the [NHANES Plan and Operations Report](https://www.cdc.gov/nchs/nhanes/index.htm](https://www.cdc.gov/nchs/nhanes/index.html).
 
 ### Included Files
 
