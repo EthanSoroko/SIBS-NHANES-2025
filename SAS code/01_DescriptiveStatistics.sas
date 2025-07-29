@@ -182,6 +182,14 @@ proc means data=nhanes_combined n mean std min max;
     var RIDAGEYR;
 run;
 
+data nhanes_combined;
+    set nhanes_combined;
+
+    /* Step 1: Impute 0 for known non-users with unknown med count */
+    if HUQ030 = 3 then HUQ030 = 1;
+    if HUQ030 = 7 or HUQ030 = 9 then HUQ030 = .;
+run;
+
 /* Downloading combined NHANES dataset */
 
 /* Set your PERSONAL output directory */
