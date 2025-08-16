@@ -120,6 +120,18 @@ proc freq data = nhanes;
 tables AGE;
 run;
 
+
+/* Full Logistic Model */
+proc surveylogistic data=nhanes;
+    domain domainvar;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White') / param=ref;
+    model HUQ030 (ref='2') = FPL_LT200 RIDAGEYR RIAGENDR RIDRETH3;
+run;
+
+
 /* modify HUQ030 
 Step 1: Convert 3 - there is more than one place to 1 - Yes there is a routine place of healthcare
 Step 2: Convert 7 and 9 (refused and don't know) to missing */
@@ -132,42 +144,6 @@ data nhanes;
     else if HUQ030 in (7, 9) then HUQ030 = .;
 run;
 
-/*Chi-Square tests for possible signficant interactions */
-
-proc freq data = nhanes;
-tables FPL_LT200 * RIAGENDR / chisq fisher; *fisher test will be conducted automatically for 2x2 chi-square tables, but not for larger ones;
-run;
-
-/* signficant: poverty level & gender */
-
-proc freq data = nhanes;
-tables RACE * RIAGENDR / chisq fisher; 
-run;
-
-/* not significant: race & gender */
-
-proc freq data = nhanes;
-tables FPL_LT200 * RACE / chisq fisher;
-run;
-
-/* significant: race & poverty levels */
-
-
-proc freq data = nhanes;
-tables FPL_LT200 * HUQ030 / chisq fisher; 
-run;
-
-/* direction of signficance in FPL on routine place of healthcare*/
-
-proc freq data = nhanes;
-tables FPL_LT200 * AGE / chisq fisher;
-run;
-
-*/ signficant: age & poverty levels */
-
-/* Interaction Tests */
-
-/* Full Logistic Model - HUQ030;
 
 data nhanes;
     set nhanes;
@@ -175,14 +151,28 @@ data nhanes;
     else domainvar=1;
 run;
 
+/* Full Logistic Models */
+
 proc surveylogistic data=nhanes;
     domain domainvar;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White') / param=ref;
-    model HUQ030 (ref='No') = FPL_LT200 RIDAGEYR RIAGENDR RIDRETH3;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') / param=ref;
+    model HUQ030 (ref='No') = FPL_LT200 RIDAGEYR RIAGENDR RACE;
 run;
+
+
+proc surveyreg data=nhanes;
+    domain domainvar;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White');
+    model RXQ050 = FPL_LT200 RIDAGEYR RIAGENDR RACE / solution clparm;
+run;
+
+/* Basic Models */
 
 /* Basic Model with just FPL_LT200 - HUQ030 */
 proc surveylogistic data=nhanes;
@@ -190,171 +180,18 @@ proc surveylogistic data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White') / param=ref;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') / param=ref;
     model HUQ030 (ref='No') = FPL_LT200;
 run;
 
 
-/* Full Logistic Model - RXQ050 */
 proc surveyreg data=nhanes;
     domain domainvar;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White');
-    model RXQ050 = FPL_LT200 RIDAGEYR RIAGENDR RIDRETH3 / solution clparm;
-run;
-
-/* Basic Model with just FPL_LT200 - RXQ050 */
-
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White');
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White');
     model RXQ050 = FPL_LT200 / solution clparm;
-run;
-
-/* Next Steps: Test interactions based on previous chi-square results. Look at difference between RACE and RIDRETH3 */
-
-/* HUQ030 Tests -- FPL vs Gender (with Race and Ridreth3), FPL vs Ridreth3, FPL vs Race */
-
-/* 0 */
-proc surveylogistic data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') AGE (ref = '65+') / param=ref;
-    model HUQ030 (ref='No') = FPL_LT200*AGE RIAGENDR RACE;
-    slice FPL_LT200*AGE / sliceby=AGE diff=control('At or Above 200% Federal Poverty Level' '65+');
-run;
-
-/* 1 */
-proc surveylogistic data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') / param=ref;
-    model HUQ030 (ref='No') = FPL_LT200*RIAGENDR RIDAGEYR RACE;
-    slice FPL_LT200*RIAGENDR / sliceby=RIAGENDR diff=control('At or Above 200% Federal Poverty Level' 'Male');
-run;
-
-
-/* 2 */
-proc surveylogistic data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White') / param=ref;
-    model HUQ030 (ref='No') = FPL_LT200*RIAGENDR RIDAGEYR RIDRETH3;
-    slice FPL_LT200*RIAGENDR / sliceby=RIAGENDR diff=control('At or Above 200% Federal Poverty Level' 'Male');
-run;
-
-/* 3 */
-proc surveylogistic data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') / param=ref;
-    model HUQ030 (ref='No') = FPL_LT200*RACE RIAGENDR RIDAGEYR;
-    slice FPL_LT200*RACE / sliceby=RACE diff=control('At or Above 200% Federal Poverty Level' 'Non-Hispanic White');
-run;
-
-
-/* 4 */
-proc surveylogistic data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White') / param=ref;
-    model HUQ030 (ref='No') = FPL_LT200*RIDRETH3 RIDAGEYR RIAGENDR;
-    slice FPL_LT200*RIDRETH3 / sliceby=RIDRETH3 diff=control('At or Above 200% Federal Poverty Level' 'Non-Hispanic White');
-run;
-
-
-/* RXQ050 Tests -- FPL vs Gender (with Race and Ridreth3), FPL vs Ridreth3, FPL vs Race */
-
-/* 5 */
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White');
-    model RXQ050 = FPL_LT200*RIDRETH3 RIDAGEYR RIAGENDR / solution clparm;
-    slice FPL_LT200*RIDRETH3 / sliceby=RIDRETH3 diff=control('At or Above 200% Federal Poverty Level' 'Non-Hispanic White');
-run;
-
-/* 6 */
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White');
-    model RXQ050 = FPL_LT200*RACE RIDAGEYR RIAGENDR / solution clparm;
-    slice FPL_LT200*RACE / sliceby=RACE diff=control('At or Above 200% Federal Poverty Level' 'Non-Hispanic White');
-run;
-
-/* 7 */
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White');
-    model RXQ050 = FPL_LT200*RIAGENDR RIDAGEYR RIDRETH3 / solution clparm;
-    slice FPL_LT200*RIAGENDR / sliceby=RIAGENDR diff=control('At or Above 200% Federal Poverty Level' 'Male');
-run;
-
-
-/* 8 */
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White');
-    model RXQ050 = FPL_LT200*RIAGENDR RIDAGEYR RACE / solution clparm;
-    slice FPL_LT200*RIAGENDR / sliceby=RIAGENDR diff=control('At or Above 200% Federal Poverty Level' 'Male');
-run;
-
-/* 9 - Testing AGE - significant interactions but no signficant change in R-Square*/
-
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') AGE (ref = '65+');
-    model RXQ050 = FPL_LT200*AGE RACE RIAGENDR / solution clparm;
-    slice FPL_LT200*AGE / sliceby=AGE diff=control('At or Above 200% Federal Poverty Level' '65+');
-run;
-
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') AGE (ref = '65+');
-    model RXQ050 = RACE*AGE FPL_LT200 RIAGENDR / solution clparm;
-    slice RACE*AGE / sliceby=RACE diff=control('Non-Hispanic White' '65+');
-run;
-
-proc surveyreg data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RACE (ref='Non-Hispanic White') AGE (ref = '65+');
-    model RXQ050 = RIAGENDR*AGE FPL_LT200 RACE / solution clparm;
-    slice RIAGENDR*AGE / sliceby=RIAGENDR diff=control('Male' '65+');
 run;
 
 
