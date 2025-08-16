@@ -120,18 +120,6 @@ proc freq data = nhanes;
 tables AGE;
 run;
 
-
-/* Full Logistic Model */
-proc surveylogistic data=nhanes;
-    domain domainvar;
-    strata SDMVSTRA;
-    cluster SDMVPSU;
-    weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') RIAGENDR (ref="Male") RIDRETH3 (ref='Non-Hispanic White') / param=ref;
-    model HUQ030 (ref='2') = FPL_LT200 RIDAGEYR RIAGENDR RIDRETH3;
-run;
-
-
 /* modify HUQ030 
 Step 1: Convert 3 - there is more than one place to 1 - Yes there is a routine place of healthcare
 Step 2: Convert 7 and 9 (refused and don't know) to missing */
