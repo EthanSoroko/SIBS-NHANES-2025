@@ -5,11 +5,11 @@ proc surveylogistic data=nhanes;
     weight WTINT2YR;
 
     class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          RIAGENDR (ref='Male')
+          AGE (ref='65+') 
           RACE (ref='Non-Hispanic White')
-          AGE (ref='65+') / param=ref;
+          RIAGENDR (ref='Male') / param=ref;
 
-    model HUQ030(ref='No') = FPL_LT200 RIAGENDR RACE AGE
+    model HUQ030(ref='No') = FPL_LT200 AGE RACE RIAGENDR
                               FPL_LT200*AGE;
 run;
 
@@ -20,11 +20,11 @@ proc surveylogistic data=nhanes;
     weight WTINT2YR;
 
     class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          RIAGENDR (ref='Male')
+          AGE (ref='65+') 
           RACE (ref='Non-Hispanic White')
-          AGE (ref='65+') / param=ref;
+          RIAGENDR (ref='Male') / param=ref;
 
-    model HUQ030(ref='No') = FPL_LT200 RIAGENDR RACE AGE
+    model HUQ030(ref='No') = FPL_LT200 AGE RACE RIAGENDR
                               FPL_LT200*RACE;
 run;
 
@@ -35,11 +35,11 @@ proc surveylogistic data=nhanes;
     weight WTINT2YR;
 
     class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          RIAGENDR (ref='Male')
+          AGE (ref='65+') 
           RACE (ref='Non-Hispanic White')
-          AGE (ref='65+') / param=ref;
+          RIAGENDR (ref='Male') / param=ref;
 
-    model HUQ030(ref='No') = FPL_LT200 RIAGENDR RACE AGE
+    model HUQ030(ref='No') = FPL_LT200 AGE RACE RIAGENDR
                               FPL_LT200*RIAGENDR;
 run;
 
@@ -50,11 +50,11 @@ proc surveyreg data=nhanes;
     weight WTINT2YR;
 
     class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          RIAGENDR (ref='Male')
+          AGE (ref='65+') 
           RACE (ref='Non-Hispanic White')
-          AGE (ref='65+');
+          RIAGENDR (ref='Male');
 
-    model RXQ050 = FPL_LT200 RIAGENDR RACE AGE
+    model RXQ050 = FPL_LT200 AGE RACE RIAGENDR
                    FPL_LT200*AGE / solution;
 run;
 
@@ -65,11 +65,11 @@ proc surveyreg data=nhanes;
     weight WTINT2YR;
 
     class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          RIAGENDR (ref='Male')
+          AGE (ref='65+') 
           RACE (ref='Non-Hispanic White')
-          AGE (ref='65+');
+          RIAGENDR (ref='Male');
 
-    model RXQ050 = FPL_LT200 RIAGENDR RACE AGE
+    model RXQ050 = FPL_LT200 AGE RACE RIAGENDR
                    FPL_LT200*RACE / solution;
 run;
 
@@ -80,10 +80,10 @@ proc surveyreg data=nhanes;
     weight WTINT2YR;
 
     class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          RIAGENDR (ref='Male')
+          AGE (ref='65+') 
           RACE (ref='Non-Hispanic White')
-          AGE (ref='65+');
+          RIAGENDR (ref='Male');
 
-    model RXQ050 = FPL_LT200 RIAGENDR RACE AGE
+    model RXQ050 = FPL_LT200 AGE RACE RIAGENDR
                    FPL_LT200*RIAGENDR / solution;
 run;

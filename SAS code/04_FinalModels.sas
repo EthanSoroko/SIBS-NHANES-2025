@@ -1,8 +1,11 @@
-/*-------------------------------------*/
-/* HUQ030 and RXQ050 Unadjusted Models */
-/*-------------------------------------*/
+/*========================================================*/
+/* HUQ030: Routine Place to Go for Healthcare             */
+/*========================================================*/
 
-/* Logistic regression: HUQ030 predicted by FPL_LT200 only */
+/*-------------------------------------*/
+/* 1. Unadjusted Model                 */
+/* HUQ030 predicted by FPL_LT200 only  */
+/*-------------------------------------*/
 proc surveylogistic data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
@@ -11,7 +14,32 @@ proc surveylogistic data=nhanes;
     model HUQ030(ref='No') = FPL_LT200;
 run;
 
-/* Linear regression: RXQ050 predicted by FPL_LT200 only */
+/*-------------------------------------*/
+/* 2. Adjusted without Interaction     */
+/* Covariates: AGE, RACE, RIAGENDR     */
+/*-------------------------------------*/
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level')
+          AGE (ref="65+")
+          RACE (ref='Non-Hispanic White')
+          RIAGENDR (ref='Male') / param=ref;
+    model HUQ030(ref='No') = FPL_LT200 AGE RACE RIAGENDR;
+run;
+
+/*-------------------------------------*/
+/* 3. No Stratified Models (no interaction significant from file 03) */
+/*-------------------------------------*/
+
+/*========================================================*/
+/* RXQ050: Number of Prescription Drugs Taken             */
+/*========================================================*/
+
+/*-------------------------------------*/
+/* 1. Unadjusted Model                 */
+/*-------------------------------------*/
 proc surveyreg data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
@@ -20,34 +48,44 @@ proc surveyreg data=nhanes;
     model RXQ050 = FPL_LT200 / solution clparm;
 run;
 
-/*-------------------------*/
-/* RXQ050 Stratified Models */
-/*-------------------------*/
+/*-------------------------------------*/
+/* 2. Adjusted without Interaction     */
+/* Covariates: AGE, RACE, RIAGENDR     */
+/*-------------------------------------*/
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level')
+          RACE (ref='Non-Hispanic White')
+          RIAGENDR (ref='Male');
+    model RXQ050 = FPL_LT200 AGE RACE RIAGENDR / solution clparm;
+run;
 
-/* Stratify by AGE (domain = AGE)
-   AGE excluded from CLASS and MODEL */
+/*-------------------------------------*/
+/* 3. Stratified Models (only AGE and RACE which were significant) */
+/*-------------------------------------*/
+
+/* Stratify by AGE */
 proc surveyreg data=nhanes;
     domain AGE;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          RACE (ref='Non-Hispanic White');
-
-    model RXQ050 = FPL_LT200 RACE / solution clparm;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level')
+          RACE (ref='Non-Hispanic White')
+          RIAGENDR (ref='Male');
+    model RXQ050 = FPL_LT200 RACE RIAGENDR / solution clparm;
 run;
 
-/* Stratify by RACE (domain = RACE)
-   RACE excluded from CLASS and MODEL */
+/* Stratify by RACE */
 proc surveyreg data=nhanes;
     domain RACE;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          AGE (ref='65+');
-
-    model RXQ050 = FPL_LT200 RIDAGEYR / solution clparm;
+    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level')
+          AGE (ref='65+')
+          RIAGENDR (ref='Male');
+    model RXQ050 = FPL_LT200 AGE RIAGENDR / solution clparm;
 run;
