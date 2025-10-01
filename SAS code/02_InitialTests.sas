@@ -58,7 +58,6 @@ proc surveyreg data=nhanes;
         RaceCat
         EducationLevel
         InsuranceType
-        UsualCare
         HealthCondition
         / solution clparm;
 run;
