@@ -1,89 +1,251 @@
-/* HUQ030 main effects + FPL × Age interaction */
+/*----------------------------------------------------
+ Reload dataset
+----------------------------------------------------*/
+libname outlib '/home/u64253021/Research Project/Datasets';
+
+data nhanes;
+    set outlib.nhanes_final_adults;
+run;
+
+/*----------------------------------------------------
+ Logistic regressions: UsualCare
+----------------------------------------------------*/
+
+/* Poverty × Age */
 proc surveylogistic data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          AGE (ref='65+') 
-          RACE (ref='Non-Hispanic White')
-          RIAGENDR (ref='Male') / param=ref;
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
 
-    model HUQ030(ref='No') = FPL_LT200 AGE RACE RIAGENDR
-                              FPL_LT200*AGE;
+    model UsualCare(ref='No usual place') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*AgeCat;
 run;
 
-/* HUQ030 with FPL × Race */
+/* Poverty × Race */
 proc surveylogistic data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          AGE (ref='65+') 
-          RACE (ref='Non-Hispanic White')
-          RIAGENDR (ref='Male') / param=ref;
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
 
-    model HUQ030(ref='No') = FPL_LT200 AGE RACE RIAGENDR
-                              FPL_LT200*RACE;
+    model UsualCare(ref='No usual place') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*RaceCat;
 run;
 
-/* HUQ030 with FPL × Gender */
+/* Poverty × Gender */
 proc surveylogistic data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          AGE (ref='65+') 
-          RACE (ref='Non-Hispanic White')
-          RIAGENDR (ref='Male') / param=ref;
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
 
-    model HUQ030(ref='No') = FPL_LT200 AGE RACE RIAGENDR
-                              FPL_LT200*RIAGENDR;
+    model UsualCare(ref='No usual place') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*Gender;
 run;
 
-/* RXQ050 with FPL × Age */
+/* Poverty × Education */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No usual place') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*EducationLevel;
+run;
+
+/* Poverty × Insurance */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No usual place') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*InsuranceType;
+run;
+
+/* Poverty × HealthCondition */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No usual place') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*HealthCondition;
+run;
+
+
+/*----------------------------------------------------
+ Linear regressions: PrescriptionCount
+----------------------------------------------------*/
+
+/* Poverty × Age */
 proc surveyreg data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          AGE (ref='65+') 
-          RACE (ref='Non-Hispanic White')
-          RIAGENDR (ref='Male');
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
 
-    model RXQ050 = FPL_LT200 AGE RACE RIAGENDR
-                   FPL_LT200*AGE / solution;
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*AgeCat / solution;
 run;
 
-/* RXQ050 with FPL × Race */
+/* Poverty × Race */
 proc surveyreg data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          AGE (ref='65+') 
-          RACE (ref='Non-Hispanic White')
-          RIAGENDR (ref='Male');
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
 
-    model RXQ050 = FPL_LT200 AGE RACE RIAGENDR
-                   FPL_LT200*RACE / solution;
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*RaceCat / solution;
 run;
 
-/* RXQ050 with FPL × Gender */
+/* Poverty × Gender */
 proc surveyreg data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') 
-          AGE (ref='65+') 
-          RACE (ref='Non-Hispanic White')
-          RIAGENDR (ref='Male');
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
 
-    model RXQ050 = FPL_LT200 AGE RACE RIAGENDR
-                   FPL_LT200*RIAGENDR / solution;
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*Gender / solution;
+run;
+
+/* Poverty × Education */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*EducationLevel / solution;
+run;
+
+/* Poverty × Insurance */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*InsuranceType / solution;
+run;
+
+/* Poverty × HealthCondition */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*HealthCondition / solution;
 run;

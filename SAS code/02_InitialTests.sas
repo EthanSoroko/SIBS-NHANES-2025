@@ -1,24 +1,64 @@
-/* Define the library */
+/*----------------------------------------------------
+ Define the library & reload the final dataset
+----------------------------------------------------*/
 libname outlib '/home/u64253021/Research Project/Datasets';
 
 data nhanes;
-    set outlib.nhanes_combined_adults;
+    set outlib.nhanes_final_adults;
 run;
 
-/* Logistic regression: HUQ030 predicted by FPL_LT200 only */
+/*----------------------------------------------------
+ Logistic regression:
+ Usual place for healthcare (UsualCare) predicted by PovertyUnder200
+ + other covariates
+----------------------------------------------------*/
 proc surveylogistic data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') / param=ref;
-    model HUQ030(ref='No') = FPL_LT200;
+    class 
+        PovertyUnder200 (ref="At or Above 200% Federal Poverty Level")
+        Gender (ref="Male")
+        RaceCat (ref="Non-Hispanic White")
+        EducationLevel (ref="Some college+") 
+        InsuranceType (ref="Private")
+        HealthCondition (ref="Neither")
+        / param=ref;
+    model UsualCare(ref="Doctor's office / health center") =
+        PovertyUnder200
+        AgeCat
+        Gender
+        RaceCat
+        EducationLevel
+        InsuranceType
+        PrescriptionCount
+        HealthCondition;
 run;
 
-/* Linear regression: RXQ050 predicted by FPL_LT200 only */
+/*----------------------------------------------------
+ Linear regression:
+ PrescriptionCount predicted by PovertyUnder200
+ + other covariates
+----------------------------------------------------*/
 proc surveyreg data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level');
-    model RXQ050 = FPL_LT200 / solution clparm;
+    class 
+        PovertyUnder200 (ref="At or Above 200% Federal Poverty Level")
+        Gender (ref="Male")
+        RaceCat (ref="Non-Hispanic White")
+        EducationLevel (ref="Some college+")
+        InsuranceType (ref="Private")
+        HealthCondition (ref="Neither");
+    model PrescriptionCount =
+        PovertyUnder200
+        AgeCat
+        Gender
+        RaceCat
+        EducationLevel
+        InsuranceType
+        UsualCare
+        HealthCondition
+        / solution clparm;
 run;
