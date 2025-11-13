@@ -15,5 +15,5 @@ run;
 ----------------------------------------------------*/
 proc freq data=nhanes;
     tables AgeCat Gender RaceCat EducationLevel InsuranceType 
-           UsualCare PrescriptionCount PovertyUnder200 HealthCondition / missing;
+           UsualCare PrescriptionCount PovertyUnder200 HealthCondition PovertyUnder200*AgeCat;
 run;

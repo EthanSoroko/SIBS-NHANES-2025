@@ -17,7 +17,8 @@ proc surveylogistic data=nhanes;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
           AgeCat (ref='65+')
           RaceCat (ref='Non-Hispanic White')
           Gender (ref='Male')
@@ -26,7 +27,7 @@ proc surveylogistic data=nhanes;
           HealthCondition (ref='Neither')
           / param=ref;
 
-    model UsualCare(ref='No usual place') =
+    model UsualCare(ref='No routine place of care') =
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           PovertyUnder200*AgeCat;
 run;
@@ -37,7 +38,8 @@ proc surveylogistic data=nhanes;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
           AgeCat (ref='65+')
           RaceCat (ref='Non-Hispanic White')
           Gender (ref='Male')
@@ -46,7 +48,7 @@ proc surveylogistic data=nhanes;
           HealthCondition (ref='Neither')
           / param=ref;
 
-    model UsualCare(ref='No usual place') =
+    model UsualCare(ref='No routine place of care') =
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           PovertyUnder200*RaceCat;
 run;
@@ -57,7 +59,8 @@ proc surveylogistic data=nhanes;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
           AgeCat (ref='65+')
           RaceCat (ref='Non-Hispanic White')
           Gender (ref='Male')
@@ -66,7 +69,7 @@ proc surveylogistic data=nhanes;
           HealthCondition (ref='Neither')
           / param=ref;
 
-    model UsualCare(ref='No usual place') =
+    model UsualCare(ref='No routine place of care') =
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           PovertyUnder200*Gender;
 run;
@@ -77,7 +80,8 @@ proc surveylogistic data=nhanes;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
           AgeCat (ref='65+')
           RaceCat (ref='Non-Hispanic White')
           Gender (ref='Male')
@@ -86,7 +90,7 @@ proc surveylogistic data=nhanes;
           HealthCondition (ref='Neither')
           / param=ref;
 
-    model UsualCare(ref='No usual place') =
+    model UsualCare(ref='No routine place of care') =
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           PovertyUnder200*EducationLevel;
 run;
@@ -97,7 +101,8 @@ proc surveylogistic data=nhanes;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
           AgeCat (ref='65+')
           RaceCat (ref='Non-Hispanic White')
           Gender (ref='Male')
@@ -106,7 +111,7 @@ proc surveylogistic data=nhanes;
           HealthCondition (ref='Neither')
           / param=ref;
 
-    model UsualCare(ref='No usual place') =
+    model UsualCare(ref='No routine place of care') =
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           PovertyUnder200*InsuranceType;
 run;
@@ -117,7 +122,8 @@ proc surveylogistic data=nhanes;
     cluster SDMVPSU;
     weight WTINT2YR;
 
-    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
           AgeCat (ref='65+')
           RaceCat (ref='Non-Hispanic White')
           Gender (ref='Male')
@@ -126,11 +132,10 @@ proc surveylogistic data=nhanes;
           HealthCondition (ref='Neither')
           / param=ref;
 
-    model UsualCare(ref='No usual place') =
+    model UsualCare(ref='No routine place of care') =
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           PovertyUnder200*HealthCondition;
 run;
-
 
 /*----------------------------------------------------
  Linear regressions: PrescriptionCount

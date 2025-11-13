@@ -58,17 +58,11 @@ run;
 proc format;
     value FPL_fmt
         1 = "Below 200% Federal Poverty Level"
-        0 = "At or Above 200% Federal Poverty Level"
-        . = "Missing";
+        0 = "At or Above 200% Federal Poverty Level";
 
-    value HealthPlace_fmt
-        1 = "Doctor's office / health center"
-        2 = "Urgent care / retail clinic"
-        3 = "Emergency room"
-        4 = "VA medical center / VA clinic"
-        5 = "Other place"
-        6 = "No usual place"
-        . = "Missing";
+    value Healthcare_fmt
+        1 = "Has routine place of care"
+        0 = "No routine place of care";
 
     value Prescrip_fmt
         0 = "0 (None)"
@@ -76,45 +70,38 @@ proc format;
         2 = "2"
         3 = "3"
         4 = "4"
-        5 = "5 or more"
-        . = "Missing";
+        5 = "5 or more";
 
     value Race_fmt
         1 = "Hispanic"
         3 = "Non-Hispanic White"
         4 = "Non-Hispanic Black"
-        6 = "Non-Hispanic Asian"
-        . = "Missing";
+        6 = "Non-Hispanic Asian";
 
     value Age_fmt
         1 = "18-34"
         2 = "35-54"
         3 = "55-64"
-        4 = "65+"
-        . = "Missing";
+        4 = "65+";
 
     value Gender_fmt
         1 = "Male"
-        2 = "Female"
-        . = "Missing";
+        2 = "Female";
 
     value Insurance_fmt
         1 = "Private"
         2 = "Public"
-        3 = "Uninsured"
-        . = "Missing";
+        3 = "Uninsured";
 
     value Condition_fmt
         1 = "Diabetes only"
         2 = "Heart disease only"
         3 = "Both diabetes + heart disease"
-        4 = "Neither"
-        . = "Missing";
+        4 = "Neither";
 
     value Educ_fmt
         1 = "HS or less"
-        2 = "Some college+"
-        . = "Missing";
+        2 = "Some college+";
 run;
 
 /*----------------------------------------------------
@@ -138,11 +125,11 @@ run;
 /* Usual healthcare place */
 data nhanes;
     set nhanes;
-    if HUQ030 = 2 and (HUQ042 in (77,99) or missing(HUQ042)) then UsualCare = 6;
-    else if HUQ042 in (77,99) then UsualCare = .;
-    else UsualCare = HUQ042;
-    label UsualCare = "Usual place for healthcare";
-    format UsualCare HealthPlace_fmt.;
+    if HUQ030 = 1 or HUQ030 = 3 then UsualCare = 1;
+    else if HUQ030 = 2 then UsualCare = 0;
+    else UsualCare = .;
+    label UsualCare = "Has routine place for healthcare";
+    format UsualCare Healthcare_fmt.;
 run;
 
 /* Prescription count */

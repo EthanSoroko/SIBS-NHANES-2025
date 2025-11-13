@@ -24,7 +24,7 @@ proc surveylogistic data=nhanes;
         InsuranceType (ref="Private")
         HealthCondition (ref="Neither")
         / param=ref;
-    model UsualCare(ref="Doctor's office / health center") =
+    model UsualCare(ref="Has routine place of care") =
         PovertyUnder200
         AgeCat
         Gender
