@@ -205,6 +205,15 @@ data nhanes;
     format Gender Gender_fmt.;
 run;
 
+/* Recode HealthCondition */
+data nhanes;
+    set nhanes;
+    if HealthCondition in (1, 2, 3) then HealthCondition = 1;
+    else if HealthCondition = 4 then HealthCondition = 2;
+    else HealthCondition = .;
+    format HealthCondition Condition2_fmt.;
+run;
+
 /*----------------------------------------------------
  Save final dataset
 ----------------------------------------------------*/
