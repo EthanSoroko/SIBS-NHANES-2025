@@ -254,3 +254,253 @@ proc surveyreg data=nhanes;
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           PovertyUnder200*HealthCondition / solution;
 run;
+
+
+/*----------------------------------------------------
+ Logistic regressions: UsualCare - InsuranceType Interactions
+----------------------------------------------------*/
+
+/* Insurance × Age */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No routine place of care') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*AgeCat /df = INFINITY;
+run;
+
+/* Insurance × Race */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No routine place of care') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*RaceCat /df = INFINITY;
+run;
+
+/* Insurance × Gender */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No routine place of care') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*Gender;
+run;
+
+/* Insurance × Education */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No routine place of care') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*EducationLevel;
+run;
+
+/* Insurance × Poverty */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No routine place of care') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*InsuranceType;
+run;
+
+/* Insurance × HealthCondition */
+proc surveylogistic data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class UsualCare (ref='No routine place of care')
+          PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither')
+          / param=ref;
+
+    model UsualCare(ref='No routine place of care') =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*HealthCondition;
+run;
+
+
+/*----------------------------------------------------
+ Linear regressions: PrescriptionCount - InsuranceType Interactions
+----------------------------------------------------*/
+
+/* Insurance × Age */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*AgeCat / solution;
+run;
+
+/* Insurance × Race */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*RaceCat / solution;
+run;
+
+/* Insurance × Gender */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*Gender / solution;
+run;
+
+/* Insurance × Education */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*EducationLevel / solution;
+run;
+
+/* Insurance × Poverty */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          PovertyUnder200*InsuranceType / solution;
+run;
+
+/* Insurance × HealthCondition */
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level')
+          AgeCat (ref='65+')
+          RaceCat (ref='Non-Hispanic White')
+          Gender (ref='Male')
+          EducationLevel (ref='Some college+')
+          InsuranceType (ref='Private')
+          HealthCondition (ref='Neither');
+
+    model PrescriptionCount =
+          PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
+          InsuranceType*HealthCondition / solution;
+run;
