@@ -99,6 +99,10 @@ proc format;
         3 = "Both diabetes + heart disease"
         4 = "Neither";
 
+    value Condition2_fmt
+        1 = "Diabetes, Heart Disease, or Both"
+        2 = "Neither";
+
     value Educ_fmt
         1 = "HS or less"
         2 = "Some college+";
