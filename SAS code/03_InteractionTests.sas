@@ -8,7 +8,7 @@ data nhanes;
 run;
 
 /*----------------------------------------------------
- Logistic regressions: UsualCare
+ Logistic regressions: UsualCare with FPL_200 Interactions
 ----------------------------------------------------*/
 
 /* Poverty × Age */
@@ -138,7 +138,7 @@ proc surveylogistic data=nhanes;
 run;
 
 /*----------------------------------------------------
- Linear regressions: PrescriptionCount
+ Linear regressions: PrescriptionCount with FPL_200 Interactions
 ----------------------------------------------------*/
 
 /* Poverty × Age */
@@ -503,4 +503,36 @@ proc surveyreg data=nhanes;
     model PrescriptionCount =
           PovertyUnder200 AgeCat RaceCat Gender EducationLevel InsuranceType HealthCondition
           InsuranceType*HealthCondition / solution;
+run;
+
+/*----------------------------------------------------
+ Linear regressions: PrescriptionCount - Confirming Significant Interactions + LSMeans
+----------------------------------------------------*/
+proc surveyreg data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+    class 
+        PovertyUnder200 (ref="At or Above 200% Federal Poverty Level")
+        Gender (ref="Male")
+        AgeCat (ref="65+")
+        RaceCat (ref="Non-Hispanic White")
+        EducationLevel (ref="Some college+")
+        InsuranceType (ref="Private")
+        HealthCondition (ref="Neither");
+    model PrescriptionCount =
+        PovertyUnder200
+        AgeCat
+        Gender
+        RaceCat
+        EducationLevel
+        InsuranceType
+        HealthCondition
+        InsuranceType*Gender
+        InsuranceType*AgeCat
+        / solution clparm;
+    lsmeans InsuranceType*Gender/ adjust=tukey; 
+    slice InsuranceType*Gender / sliceby=Gender;
+    lsmeans InsuranceType*AgeCat/ adjust=tukey; 
+    slice InsuranceType*AgeCat / sliceby=AgeCat;
 run;
