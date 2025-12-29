@@ -18,6 +18,7 @@ proc surveylogistic data=nhanes;
     weight WTINT2YR;
     class 
         PovertyUnder200 (ref="At or Above 200% Federal Poverty Level")
+        AgeCat (ref="65+")
         Gender (ref="Male")
         RaceCat (ref="Non-Hispanic White")
         EducationLevel (ref="Some college+") 
@@ -31,7 +32,6 @@ proc surveylogistic data=nhanes;
         RaceCat
         EducationLevel
         InsuranceType
-        PrescriptionCount
         HealthCondition;
 run;
 
@@ -46,6 +46,7 @@ proc surveyreg data=nhanes;
     weight WTINT2YR;
     class 
         PovertyUnder200 (ref="At or Above 200% Federal Poverty Level")
+        AgeCat (ref="65+")
         Gender (ref="Male")
         RaceCat (ref="Non-Hispanic White")
         EducationLevel (ref="Some college+")
