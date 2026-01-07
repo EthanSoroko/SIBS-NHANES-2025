@@ -13,7 +13,14 @@ run;
 /*----------------------------------------------------
  Descriptive Statistics
 ----------------------------------------------------*/
-proc freq data=nhanes;
-    tables AgeCat Gender RaceCat EducationLevel InsuranceType 
-           UsualCare PrescriptionCount PovertyUnder200 HealthCondition PovertyUnder200*AgeCat;
+proc surveyfreq data=nhanes;
+    strata SDMVSTRA;
+    cluster SDMVPSU;
+    weight WTINT2YR;
+
+    tables AgeCat Gender RaceCat EducationLevel InsuranceType
+           UsualCare PrescriptionCount PovertyUnder200 HealthCondition
+           PovertyUnder200*AgeCat
+           / row;
 run;
+

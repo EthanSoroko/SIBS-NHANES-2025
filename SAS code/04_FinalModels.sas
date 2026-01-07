@@ -1,17 +1,17 @@
 /*========================================================*/
-/* HUQ030: Routine Place to Go for Healthcare             */
+/* UsualCare: Routine Place to Go for Healthcare             */
 /*========================================================*/
 
 /*-------------------------------------*/
 /* 1. Unadjusted Model - OLD                */
-/* HUQ030 predicted by FPL_LT200 only  */
+/* UsualCare predicted by PovertyUnder200 only  */
 /*-------------------------------------*/
 proc surveylogistic data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level') / param=ref;
-    model HUQ030(ref='No') = FPL_LT200;
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level') / param=ref;
+    model UsualCare(ref='No routine place of care') = PovertyUnder200;
 run;
 
 /*-------------------------------------*/
@@ -54,8 +54,8 @@ proc surveyreg data=nhanes;
     strata SDMVSTRA;
     cluster SDMVPSU;
     weight WTINT2YR;
-    class FPL_LT200 (ref='At or Above 200% Federal Poverty Level');
-    model RXQ050 = FPL_LT200 / solution clparm;
+    class PovertyUnder200 (ref='At or Above 200% Federal Poverty Level');
+    model RXQ050 = PovertyUnder200 / solution clparm;
 run;
 
 /*-------------------------------------*/
